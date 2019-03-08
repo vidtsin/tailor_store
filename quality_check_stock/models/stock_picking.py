@@ -25,7 +25,7 @@ class Picking(models.Model):
     default_location_second_dest_id = fields.Many2one(
         'stock.location', 'Destination Location After QC',
         help="This is the destination location when you done the quality check")
-    picking_code = fields.Selection(related='picking_type_id.code', streing='Picking Code')
+    picking_code = fields.Selection(related='picking_type_id.code', string='Picking Code')
 
     state = fields.Selection([
         ('draft', 'Draft'),
