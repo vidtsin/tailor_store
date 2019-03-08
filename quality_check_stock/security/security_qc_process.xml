@@ -1,0 +1,14 @@
+<odoo>
+    <data noupdate="0">
+        <record model="ir.module.category" id="qc_operation">
+            <field name="name">QC Operation</field>
+            <field name="description">Access Level For QC Operation</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="group_qc_operation" model="res.groups">
+            <field name="name">Enable</field>
+            <field name="category_id" ref="quality_check_stock.qc_operation"/>
+        </record>
+    </data>
+</odoo>
