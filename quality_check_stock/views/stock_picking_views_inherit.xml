@@ -1,7 +1,6 @@
 <odoo>
     <record id="stock_picking_inherit_view" model="ir.ui.view">
         <field name="model">stock.picking.type</field>
-        <field name="view_type">kanban</field>
         <field name="inherit_id" ref="stock.stock_picking_type_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//t[@t-name='kanban-box']" position="replace">
@@ -116,7 +115,6 @@
 
     <record id="stock_picking_form_inherit_view" model="ir.ui.view">
         <field name="model">stock.picking</field>
-        <field name="view_type">form</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='location_dest_id']" position="after">
@@ -232,45 +230,45 @@
     </record>
 
     <record id="stock.view_picking_internal_search" model="ir.ui.view">
-            <field name="name">stock.picking.internal.search</field>
-            <field name="model">stock.picking</field>
-            <field name="arch" type="xml">
-                <search string="Picking Lists">
-                    <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]"/>
-                    <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves"/>
-                    <filter name="waiting" string="Waiting" domain="[('state','in', ('confirmed', 'waiting'))]" help="Waiting Moves"/>
-                    <filter name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
-                    <filter name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
-                    <filter name="done" string="QC Approved" domain="[('state','=','qc_approved')]" help="Pickings already processed"/>
-                    <filter name="cancel" string="Cancelled" domain="[('state','=', 'cancel')]" help="Cancelled Moves"/>
-                    <separator/>
-                    <filter name="late" string="Late" domain="[('scheduled_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
-                    <separator/>
-                    <filter name="backorder" string="Backorders" domain="[('backorder_id','!=', False)]" help="Remaining parts of picking partially processed"/>
-                    <separator/>
-                    <filter string="My Activities" name="activities_my"
+        <field name="name">stock.picking.internal.search</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search string="Picking Lists">
+                <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves"/>
+                <filter name="waiting" string="Waiting" domain="[('state','in', ('confirmed', 'waiting'))]" help="Waiting Moves"/>
+                <filter name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
+                <filter name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
+                <filter name="qc_approved" string="QC Approved" domain="[('state','=','qc_approved')]" help="Pickings already processed"/>
+                <filter name="cancel" string="Cancelled" domain="[('state','=', 'cancel')]" help="Cancelled Moves"/>
+                <separator/>
+                <filter name="late" string="Late" domain="[('scheduled_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
+                <separator/>
+                <filter name="backorder" string="Backorders" domain="[('backorder_id','!=', False)]" help="Remaining parts of picking partially processed"/>
+                <separator/>
+                <filter string="My Activities" name="activities_my"
                         domain="[('activity_ids.user_id', '=', uid)]"/>
-                    <separator/>
-                    <filter string="Late Activities" name="activities_overdue"
+                <separator/>
+                <filter string="Late Activities" name="activities_overdue"
                         domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
                         help="Show all records which has next action date is before today"/>
-                    <filter string="Today Activities" name="activities_today"
+                <filter string="Today Activities" name="activities_today"
                         domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Future Activities" name="activities_upcoming_all"
+                <filter string="Future Activities" name="activities_upcoming_all"
                         domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
                         ]"/>
-                    <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
-                    <field name="product_id"/>
-                    <field name="picking_type_id"/>
-                    <field name="group_id"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
-                        <filter string="Order Date" name="order_date" domain="[]"  context="{'group_by':'date'}"/>
-                        <filter string="Scheduled Date" name="expected_date" domain="[]" context="{'group_by': 'scheduled_date'}"/>
-                        <filter string="Origin" name="origin" domain="[]" context="{'group_by':'origin'}"/>
-                        <filter name="picking_type" string="Operation Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+                <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+                <field name="product_id"/>
+                <field name="picking_type_id"/>
+                <field name="group_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Order Date" name="order_date" domain="[]"  context="{'group_by':'date'}"/>
+                    <filter string="Scheduled Date" name="expected_date" domain="[]" context="{'group_by': 'scheduled_date'}"/>
+                    <filter string="Origin" name="origin" domain="[]" context="{'group_by':'origin'}"/>
+                    <filter name="picking_type" string="Operation Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 </odoo>
