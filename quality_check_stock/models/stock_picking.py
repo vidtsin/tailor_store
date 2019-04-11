@@ -25,7 +25,8 @@ class Picking(models.Model):
     default_location_second_dest_id = fields.Many2one(
         'stock.location', 'Destination Location After QC',
         help="This is the destination location when you done the quality check")
-    picking_code = fields.Selection(related='picking_type_id.code', streing='Picking Code')
+    picking_code = fields.Selection(related='picking_type_id.code', string='Picking Code')
+
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -35,6 +36,7 @@ class Picking(models.Model):
         ('qc', 'Quality Control'),
         ('done', 'Done'),
         ('qc_approved', 'QC Approved'),
+        ('qc_reject', 'QC Rejected'),
         ('cancel', 'Cancelled'),
     ], string='Status', compute='_compute_state',
         copy=False, index=True, readonly=True, store=True, track_visibility='onchange',
@@ -46,9 +48,72 @@ class Picking(models.Model):
              " * Cancelled: has been cancelled, can't be confirmed anymore.")
     qc_approved_lines = fields.One2many('stock.move', 'picking_qc_id', string="QC Approved Lines")
     is_qc_done = fields.Boolean(string='Is QC Done', default=False)
+    is_qc_reject = fields.Boolean(string='Is QC Reject', default=False)
+
+    @api.model
+    def create(self, vals):
+        # TDE FIXME: clean that brol
+        defaults = self.default_get(['name', 'picking_type_id'])
+        if vals.get('name', '/') == '/' and defaults.get('name', '/') == '/' and vals.get('picking_type_id',
+                                                                                          defaults.get(
+                                                                                                  'picking_type_id')):
+            vals['name'] = self.env['stock.picking.type'].browse(
+                vals.get('picking_type_id', defaults.get('picking_type_id'))).sequence_id.next_by_id()
+
+        if vals.get('is_qc_reject'):
+            vals.update({'state': 'draft'})
+
+        # TDE FIXME: what ?
+        # As the on_change in one2many list is WIP, we will overwrite the locations on the stock moves here
+        # As it is a create the format will be a list of (0, 0, dict)
+        if vals.get('move_lines') and vals.get('location_id') and vals.get('location_dest_id'):
+            for move in vals['move_lines']:
+                if len(move) == 3 and move[0] == 0:
+                    move[2]['location_id'] = vals['location_id']
+                    move[2]['location_dest_id'] = vals['location_dest_id']
+        res = super(Picking, self).create(vals)
+        if vals.get('is_qc_reject'):
+            pass
+        else:
+            res._autoconfirm_picking()
+        return res
+
+    @api.depends('move_type', 'move_lines.state', 'move_lines.picking_id')
+    @api.one
+    def _compute_state(self):
+        ''' State of a picking depends on the state of its related stock.move
+        - Draft: only used for "planned pickings"
+        - Waiting: if the picking is not ready to be sent so if
+          - (a) no quantity could be reserved at all or if
+          - (b) some quantities could be reserved and the shipping policy is "deliver all at once"
+        - Waiting another move: if the picking is waiting for another move
+        - Ready: if the picking is ready to be sent so if:
+          - (a) all quantities are reserved or if
+          - (b) some quantities could be reserved and the shipping policy is "as soon as possible"
+        - Done: if the picking is done.
+        - Cancelled: if the picking is cancelled
+        '''
+        if self.is_qc_reject:
+            self.state = 'qc_reject'
+        else:
+            if not self.move_lines:
+                self.state = 'draft'
+            elif any(move.state == 'draft' for move in self.move_lines):  # TDE FIXME: should be all ?
+                self.state = 'draft'
+            elif all(move.state == 'cancel' for move in self.move_lines):
+                self.state = 'cancel'
+            elif all(move.state in ['cancel', 'done'] for move in self.move_lines):
+                self.state = 'done'
+            else:
+                relevant_move_state = self.move_lines._get_relevant_state_among_moves()
+                if relevant_move_state == 'partially_available':
+                    self.state = 'assigned'
+                else:
+                    self.state = relevant_move_state
 
     @api.onchange('picking_type_id', 'partner_id')
     def onchange_picking_type(self):
+        """Set the default QC picking"""
         default_location_second_dest_id = None
         if self.picking_type_id:
             if self.picking_type_id.default_location_src_id:
@@ -187,6 +252,7 @@ class Picking(models.Model):
 
     @api.multi
     def button_validate_qc(self):
+        """Validate the QC process with special authentication level"""
         self.ensure_one()
         if not self.move_lines and not self.move_line_ids:
             raise UserError(_('Please add some items to move.'))

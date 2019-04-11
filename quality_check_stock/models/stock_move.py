@@ -11,6 +11,20 @@ class StockMove(models.Model):
     picking_qc_id = fields.Many2one('stock.picking', 'Transfer Reference for QC', index=True, states={'done': [('readonly', True)]})
     qc_note = fields.Text(string='Note')
 
+    def _get_new_picking_values(self):
+        """ Prepares a new picking for this move as it could not be assigned to
+        another picking. This method is designed to be inherited. """
+        return {
+            'origin': self.origin,
+            'company_id': self.company_id.id,
+            'move_type': self.group_id and self.group_id.move_type or 'direct',
+            'partner_id': self.partner_id.id,
+            'picking_type_id': self.picking_type_id.id,
+            'location_id': self.location_id.id,
+            'location_dest_id': self.location_dest_id.id,
+            'is_qc_reject': True,
+        }
+
     def action_show_details_qc(self):
         """ Returns an action that will open a form view (in a popup) allowing to work on all the
         move lines of a particular move. This form view is used when "show operations" is not

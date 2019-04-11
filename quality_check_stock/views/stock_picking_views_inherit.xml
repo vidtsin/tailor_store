@@ -118,7 +118,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='location_dest_id']" position="after">
-                <field name="default_location_second_dest_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '!=', 'qc')], 'required': [('picking_type_code', '=', 'qc')], 'readonly': [('state', '=', 'qc_approved')]}"/>
+                <field name="default_location_second_dest_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': ['|', ('picking_type_code', '!=', 'qc'), ('state', '=', 'qc_reject')], 'required': [('picking_type_code', '=', 'qc'), ('state', '!=', 'qc_reject')], 'readonly': [('state', '=', 'qc_approved')]}"/>
             </xpath>
 
             <xpath expr="//header" position="inside">
@@ -131,6 +131,18 @@
 
             <xpath expr="//field[@name='name']" position="after">
                 <field name="picking_code" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//sheet/notebook/page[3]/group/group[1]//field[@name='move_type']" position="replace">
+                <field name="move_type" attrs="{'invisible': [('picking_type_code', '=', 'incoming')], 'readonly': [('state', '=', 'qc_reject')]}" />
+            </xpath>
+
+            <xpath expr="//sheet/group/group[1]//field[@name='partner_id']" position="replace">
+                <field name="partner_id" attrs="{'invisible': [('state', '=', 'qc_reject')]}" />
+            </xpath>
+
+            <xpath expr="//sheet/notebook/page[3]/group/group[2]//field[@name='priority']" position="replace">
+                <field name="priority" attrs="{'invisible': [('state', '=', 'qc_reject')]}" />
             </xpath>
 
             <xpath expr="//sheet/notebook//page[2]" position="after">
@@ -240,6 +252,7 @@
                 <filter name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
                 <filter name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
                 <filter name="qc_approved" string="QC Approved" domain="[('state','=','qc_approved')]" help="Pickings already processed"/>
+                <filter name="qc_reject" string="QC Reject" domain="[('state','=','qc_reject')]" help="Pickings already processed"/>
                 <filter name="cancel" string="Cancelled" domain="[('state','=', 'cancel')]" help="Cancelled Moves"/>
                 <separator/>
                 <filter name="late" string="Late" domain="[('scheduled_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
