@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_ageing,product_ageing_report,product_ageing_report.model_product_ageing,access_for_product_ageing,1,1,1,1
+access_report_ageing_result,product_ageing_report_result,product_ageing_report.model_ageing_result,access_for_product_ageing,1,1,1,1
+

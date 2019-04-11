@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="ageing_analysis_view" model="ir.ui.view">
+            <field name="name">Ageing Analysis Wizard</field>
+            <field name="model">product.ageing</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <h3 class="text-primary">Select Report Type</h3>
+                            <field name="report_type_selection" widget="radio"/>
+
+                            <h3 class="text-primary">Date</h3>
+                            <field name="from_date"/>
+
+                            <h3 class="text-primary">Product Information</h3>
+
+                            <field name="set_internal_location"/>
+                            <field name="location_id" widget="many2many_tags" attrs="{'invisible': [('set_internal_location', '=', True)]}"/>
+
+                            <field name="set_all_product_categories"/>
+                            <field name="product_category" widget="many2many_tags" attrs="{'invisible': [('set_all_product_categories', '=', True)]}"/>
+                            <field name="interval" invisible="1"/>
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <button string="Print" name="compute_ageing" type="object" class="btn-primary"/>
+                        <button string="Discard" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_prod_ageing_analysis" model="ir.actions.act_window">
+            <field name="name">Stock Ageing Analysis</field>
+            <field name="res_model">product.ageing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ageing_analysis_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Stock Ageing Analysis" id="prod_ageing_analysis" action="action_prod_ageing_analysis"
+                  parent="stock.menu_warehouse_report" groups="product_ageing_report.access_for_product_ageing"/>
+
+    </data>
+
+    <record id="product_ageing_inherit_view" model="ir.ui.view">
+        <field name="model">product.ageing</field>
+        <field name="view_type">form</field>
+        <field name="inherit_id" ref="product_ageing_report.ageing_analysis_view"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name = 'interval']" position="after">
+                <field name="product_ageing_result" widget="one2many" invisible="1">
+                    <tree editable="bottom">
+                        <field name="product_name"/>
+                        <field name="product_uom"/>
+                        <field name="range_one"/>
+                        <field name="range_two"/>
+                        <field name="range_three"/>
+                        <field name="range_four"/>
+                        <field name="range_five"/>
+                        <field name="total_quantity"/>
+                    </tree>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_ageing_analysis">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="row">
+                            <div class="mt32 mb32">
+                                <h3 style="text-align:center;">
+                                    <t t-if="o.report_type_selection == 'quant'">
+                                        Stock Ageing Analysis(Quantity)
+                                    </t>
+                                    <t t-if="o.report_type_selection == 'value'">
+                                        Stock Ageing Analysis(Value)
+                                    </t>
+                                </h3>
+                            </div>
+                        </div>
+
+                        <p>Product Categories :
+                            <strong>
+                                <t t-if="o.set_internal_location">
+                                    <span>All Categories</span>
+                                </t>
+                                <span t-foreach="o.product_category" t-as="p">
+                                    <span t-esc="p.complete_name"></span>,
+                                </span>
+                            </strong>
+                        </p>
+
+                        <p>Locations :
+                            <strong>
+                                <t t-if="o.set_internal_location">
+                                    <span>All Internal Locations</span>
+                                </t>
+                                <span t-foreach="o.location_id" t-as="l">
+                                    <span t-esc="l.complete_name">All</span>,
+                                </span>
+                            </strong>
+                        </p>
+
+                        <p>To Date :
+                            <strong>
+                                <span t-field="o.from_date"></span>
+                            </strong>
+                        </p>
+
+                        <p>Interval :
+                            <strong>
+                                <span t-field="o.interval"></span>
+                            </strong>
+                        </p>
+
+                        <br/>
+
+                        <t t-if="o.report_type_selection == 'quant'">
+                            <table class="table table-bordered table-responsive" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Product Code</th>
+                                    <th class="text-center">Product Description</th>
+                                    <th class="text-center">Unit of Measure</th>
+                                    <th class="text-center">0 -
+                                        <span t-esc="o.interval"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="o.interval + 1"></span>
+                                        -
+                                        <span t-esc="o.interval * 2"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="(o.interval * 2) + 1"></span>
+                                        -
+                                        <span t-esc="o.interval * 3"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="(o.interval * 3) + 1"></span>
+                                        -
+                                        <span t-esc="o.interval * 4"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="(o.interval * 4) + 1"></span>
+                                        -
+                                        <span t-esc="o.interval * 8"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="(o.interval * 8) + 1"></span>
+                                        -
+                                        <span t-esc="o.interval * 12"></span>
+                                    </th>
+                                    <th class="text-center">
+                                        <span t-esc="o.interval * 12"></span>+
+                                    </th>
+                                    <th class="text-center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.product_ageing_result" t-as="line">
+                                    <td class="text-left">
+                                        <span  t-field="line.product_name"></span>
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-field="line.product_desc"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.product_uom"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_one"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_two"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_three"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_four"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_five"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_six"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.range_seven"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="line.total_quantity"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" colspan="3">
+                                       <b>Total</b>
+                                    </td>
+
+
+                                    <td class="text-center">
+                                       <span t-esc="'%.2f'%sum(l.range_one for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.range_two for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.range_three for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                       <span t-esc="'%.2f'%sum(l.range_four for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.range_five for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.range_six for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.range_seven for l in o.product_ageing_result)"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'%.2f'%sum(l.total_quantity for l in o.product_ageing_result)"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </t>
+
+                        <t t-if="o.report_type_selection == 'value'">
+                            <table class="table table-bordered table-responsive" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Product Code</th>
+                                        <th class="text-center">Product Description</th>
+                                        <th class="text-center">Unit of Measure</th>
+                                        <th class="text-center">0 -
+                                            <span t-esc="o.interval"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="o.interval + 1"></span>
+                                            -
+                                            <span t-esc="o.interval * 2"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="(o.interval * 2) + 1"></span>
+                                            -
+                                            <span t-esc="o.interval * 3"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="(o.interval * 3) + 1"></span>
+                                            -
+                                            <span t-esc="o.interval * 4"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="(o.interval * 4) + 1"></span>
+                                            -
+                                            <span t-esc="o.interval * 8"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="(o.interval * 8) + 1"></span>
+                                            -
+                                            <span t-esc="o.interval * 12"></span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span t-esc="o.interval * 12"></span>+
+                                        </th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.product_ageing_result" t-as="line">
+                                        <td class="text-left">
+                                            <span t-field="line.product_name"></span>
+                                        </td>
+                                        <td class="text-left">
+                                            <span t-field="line.product_desc"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.product_uom"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_one)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_two)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_three)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_four)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_five)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_six)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.value_seven)).replace(',', ',')"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(float(line.total_value)).replace(',', ',')"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td class="text-center" colspan="3">
+                                       <b>Total</b>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_one for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_two for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_three for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_four for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_five for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_six for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.value_seven for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="'{0:,.2f}'.format(float(sum(l.total_value for l in o.product_ageing_result))).replace(',', ',')"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                        </table>
+                        </t>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <report
+            id="action_report_product_ageing"
+            model="product.ageing"
+            report_type="qweb-html"
+            string="Ageing Analysis"
+            name="product_ageing_report.report_ageing_analysis"
+            file="product_ageing_report.report_ageing_analysis"
+            menu="False"
+    />
+</odoo>
