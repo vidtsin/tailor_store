@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <record id="crystal_report_user" model="ir.rule">
+            <field name="name">User Filter</field>
+            <field name="model_id" ref="model_crystal_reporting"/>
+            <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="crystal_report_hr_officer_hr_manager" model="ir.rule">
+            <field name="name">HR Filter</field>
+            <field name="model_id" ref="model_crystal_reporting"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user')),(4, ref('hr.group_hr_manager'))]"/>
+        </record>
+    </data>
+</odoo>

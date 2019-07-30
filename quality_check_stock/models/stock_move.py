@@ -13,7 +13,7 @@ class StockMove(models.Model):
 
     def _get_new_picking_values(self):
         """ Prepares a new picking for this move as it could not be assigned to
-        another picking. This method is to designed to be inherited.  """
+        another picking. This method is designed to be inherited. """
         return {
             'origin': self.origin,
             'company_id': self.company_id.id,

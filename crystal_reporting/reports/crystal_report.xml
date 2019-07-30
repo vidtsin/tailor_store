@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="crystal_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <br/>
+                        <div>
+                            <t t-if="o.employee_id.name"><p style="display: inline;"><span t-field="o.employee_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street2"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street2"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.city"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.city"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.state_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.state_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.country_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.country_id.name"/>,</p><br/></t>
+                        </div>
+                        <br/>
+                        <div>
+                            <span t-field="o.body"/>
+                        </div>
+                        <table width="100%">
+                            <tr>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Date</td>
+                                <td width="50%"></td>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Signature</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="footer">
+                        <t t-if="o.number_of_prints > 1"><p class="text-right">Copy</p></t>
+                        <t t-if="o.number_of_prints == 1"><p class="text-right">Original</p></t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <report
+            id="action_crystal_report"
+            string="Candidate Details Report"
+            model="crystal.reporting"
+            report_type="qweb-pdf"
+            file="crystal_reporting.crystal_report"
+            name="crystal_reporting.crystal_report"
+            menu="False"
+    />
+</odoo>

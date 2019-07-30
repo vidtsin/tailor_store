@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+            id="menu_hr_warning_letters_root"
+            name="Warning Letter Request"
+            web_icon="hr_warning_letters,static/description/icon.png"
+            groups="hr.group_hr_user"
+            sequence="1"/>
+</odoo>

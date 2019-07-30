@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- inherit attendance form -->
+	<record id="hr_attendance_view_form_tis_naag_inherit" model="ir.ui.view">
+		<field name="name">hr.attendance.form.naag</field>
+		<field name="model">hr.attendance</field>
+		<field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//group" position="after">
+				<group colspan="4">
+					<group>
+						<field name="date"/>
+						<field name="in_time" widget="float_time"/>
+					</group>
+					<group>
+						<field name="out_time" widget="float_time"/>
+						<field name="worked_hours" widget="float_time"/>
+					</group>
+				</group>
+			</xpath>
+		</field>
+	</record>
+
+	<!-- attendance tree inherit -->
+	<record id="view_attendance_tree_inherit" model="ir.ui.view">
+		<field name="name">hr.attendance.tree.inherit</field>
+		<field name="model">hr.attendance</field>
+		<field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+		<field name="arch" type="xml">
+			<data>
+				<field name="check_out" position="after">
+					<field name="date"/>
+					<field name="in_time" widget="float_time"/>
+					<field name="out_time" widget="float_time"/>
+					<field name="worked_hours" widget="float_time"/>
+				</field>
+			</data>
+		</field>
+	</record>
+</odoo>

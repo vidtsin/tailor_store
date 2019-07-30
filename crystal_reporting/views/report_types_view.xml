@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="report_types_tree_view" model="ir.ui.view">
+        <field name="name">report.types.tree</field>
+        <field name="model">report.types</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name" required="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="report_types_action" model="ir.actions.act_window">
+        <field name="name">Report Types</field>
+        <field name="res_model">report.types</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Click here to add a new Report Types
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="menu_report_types"
+            name="Report Types"
+            action="report_types_action"
+            parent="menu_crystal_reporting_root"
+            sequence="1"
+            groups="hr.group_hr_manager"/>
+</odoo>

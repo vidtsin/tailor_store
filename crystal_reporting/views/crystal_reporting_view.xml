@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="crystal_reporting_form_view" model="ir.ui.view">
+        <field name="name">crystal.reporting.form</field>
+        <field name="model">crystal.reporting</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="request_doc" type="object" string="Request" attrs="{'invisible': [('state', 'not in', ['draft'])]}" class="btn btn-primary"/>
+                    <button name="confirm_doc" type="object" string="Confirm" attrs="{'invisible': [('state', 'not in', ['sent'])]}" class="btn btn-primary" groups="hr.group_hr_user"/>
+                    <button name="approve_doc" type="object" string="Approve" attrs="{'invisible': [('state', 'not in', ['confirm'])]}" class="btn btn-primary" groups="hr.group_hr_manager"/>
+                    <button name="reject_doc" type="object" string="Reject" attrs="{'invisible': [('state', 'not in', ['confirm'])]}" class="btn btn-primary" groups="hr.group_hr_manager"/>
+                    <button name="print_doc" type="object" string="Print Document" attrs="{'invisible': [('state', 'not in', ['approve'])]}" class="btn btn-primary" groups="hr.group_hr_manager"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group colspan="2">
+                            <field name="employee_id" widget="selection" required="1" attrs="{'readonly': [('state', 'in', ['approve', 'reject'])]}"/>
+                        </group>
+                        <group>
+                            <field name="doc_type" widget="selection" required="1" attrs="{'readonly': [('state', 'in', ['approve', 'reject'])]}"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="reason" required="1" attrs="{'readonly': [('state', 'in', ['approve', 'reject'])]}"/>
+                        </group>
+                    </group>
+                    <group colspan="2">
+                        <field name="body" groups="hr.group_hr_user" attrs="{'readonly': [('state', 'in', ['approve', 'reject'])]}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="crystal_reporting_tree_view" model="ir.ui.view">
+        <field name="name">crystal.reporting.tree</field>
+        <field name="model">crystal.reporting</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="doc_type"/>
+                <field name="reason"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="crystal_reporting_action" model="ir.actions.act_window">
+        <field name="name">Report</field>
+        <field name="res_model">crystal.reporting</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click here to request a report
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem
+            id="menu_crystal_reporting"
+            name="Request Report"
+            parent="menu_crystal_reporting_root"
+            action="crystal_reporting_action"
+            sequence="0"
+            groups="base.group_user"/>
+
+
+    <record id="inherit_hr_employee" model="ir.ui.view">
+        <field name="name">inherit.hr.employee</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="is_hr_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

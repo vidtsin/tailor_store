@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crystal_reporting,crystal.reporting,crystal_reporting.model_crystal_reporting,base.group_user,1,1,1,1
+access_report_types,report.types,crystal_reporting.model_report_types,base.group_user,1,1,1,1
+access_ir_config_parameter,ir.config_parameter,base.model_ir_config_parameter,base.group_user,1,1,1,1

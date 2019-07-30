@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="hr_warning_letters_form_view" model="ir.ui.view">
+        <field name="name">hr.warning.letters.form.view</field>
+        <field name="model">hr.warning.letters</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="raise_first_warning" type="object" string="Raise First Warning" attrs="{'invisible': [('state', 'not in', ['draft'])]}" class="btn btn-primary"/>
+                    <button name="generate_warning_1" type="object" string="Generate First Warning" attrs="{'invisible': [('state', 'not in', ['level_1_warning'])]}" class="btn btn-primary" groups="hr.group_hr_manager"/>
+                    <button name="raise_second_warning" type="object" string="Raise Second Warning" attrs="{'invisible': [('state', 'not in', ['level_1_warning_issue'])]}" class="btn btn-primary" groups="hr.group_hr_user"/>
+                    <button name="generate_warning_2" type="object" string="Generate Second Warning" attrs="{'invisible': [('state', 'not in', ['level_2_warning'])]}" class="btn btn-primary" groups="hr.group_hr_manager"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" widget="selection" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="First Warning">
+                            <group>
+                                <field name="warning1_reason" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="warning1_body" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </group>
+                        </page>
+                        <page string="Second Warning" attrs="{'invisible': [('state', 'in', ['draft', 'level_1_warning'])]}">
+                            <group>
+                                <field name="warning2_reason" attrs="{'readonly': [('state', '!=', 'level_1_warning_issue')], 'invisible': [('state', 'in', ['draft', 'level_1_warning'])],  'required': [('state', '=', 'level_1_warning_issue')]}"/>
+                                <field name="warning2_body" attrs="{'readonly': [('state', '!=', 'level_1_warning_issue')], 'invisible': [('state', 'in', ['draft', 'level_1_warning'])],  'required': [('state', '=', 'level_1_warning_issue')]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="hr_warning_letters_tree_view" model="ir.ui.view">
+        <field name="name">hr.warning.letters</field>
+        <field name="model">hr.warning.letters</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="hr_warning_letters_action" model="ir.actions.act_window">
+        <field name="name">Warning Letters</field>
+        <field name="res_model">hr.warning.letters</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click here to create warning letter
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem
+            id="menu_hr_warning_letters"
+            name="HR Warning Letters"
+            parent="menu_hr_warning_letters_root"
+            action="hr_warning_letters_action"
+            sequence="0"
+            groups="base.group_user"/>
+
+
+<!--    <record id="inherit_hr_employee" model="ir.ui.view">-->
+<!--        <field name="name">inherit.hr.employee</field>-->
+<!--        <field name="model">hr.employee</field>-->
+<!--        <field name="inherit_id" ref="hr.view_employee_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='user_id']" position="after">-->
+<!--                <field name="is_hr_manager"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+</odoo>

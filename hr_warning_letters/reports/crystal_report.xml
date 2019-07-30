@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="first_warning_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <br/>
+                        <div>
+                            <t t-if="o.employee_id.name"><p style="display: inline;"><span t-field="o.employee_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street2"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street2"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.city"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.city"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.state_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.state_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.country_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.country_id.name"/>,</p><br/></t>
+                        </div>
+                        <br/>
+                        <div>
+                            <span t-field="o.warning1_body"/>
+                        </div>
+                        <table width="100%">
+                            <tr>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Date</td>
+                                <td width="50%"></td>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Signature</td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="second_warning_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <br/>
+                        <div>
+                            <t t-if="o.employee_id.name"><p style="display: inline;"><span t-field="o.employee_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.street2"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.street2"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.city"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.city"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.state_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.state_id.name"/>,</p><br/></t>
+                            <t t-if="o.employee_id.address_home_id.country_id.name"><p style="display: inline;"><span t-field="o.employee_id.address_home_id.country_id.name"/>,</p><br/></t>
+                        </div>
+                        <br/>
+                        <div>
+                            <span t-field="o.warning2_body"/>
+                        </div>
+                        <table width="100%">
+                            <tr>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Date</td>
+                                <td width="50%"></td>
+                                <td width="25%" style="border-top: solid 1px;" class="text-center">Signature</td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <report
+            id="action_first_warning_report"
+            string="First Warning Report"
+            model="hr.warning.letters"
+            report_type="qweb-pdf"
+            file="hr_warning_letters.first_warning_report"
+            name="hr_warning_letters.first_warning_report"
+            menu="False"
+    />
+
+    <report
+            id="action_second_warning_report"
+            string="Second Warning Report"
+            model="hr.warning.letters"
+            report_type="qweb-pdf"
+            file="hr_warning_letters.second_warning_report"
+            name="hr_warning_letters.second_warning_report"
+            menu="False"
+    />
+</odoo>

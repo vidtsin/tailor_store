@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Inheriting resource_leaves(global leaves)-->
+        <record id="hr_resource_calendar_leaves_inherit" model="ir.ui.view">
+            <field name="model">resource.calendar.leaves</field>
+            <field name="view_type">form</field>
+            <field name="inherit_id" ref="resource.resource_calendar_leave_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_to']" position="after">
+                    <field name="half_day_date" attrs="{'invisible': [('is_half_day', '=', False)]}"/>
+                    <field name="is_half_day"/>
+                </xpath>
+
+                <xpath expr="//field[@name='date_from']" position="replace">
+                    <field name="date_from" attrs="{'invisible': [('is_half_day', '=', True)]}"/>
+                </xpath>
+
+                <xpath expr="//field[@name='date_to']" position="replace">
+                    <field name="date_to" attrs="{'invisible': [('is_half_day', '=', True)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

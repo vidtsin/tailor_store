@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+            id="menu_crystal_reporting_root"
+            name="Letter Request"
+            web_icon="crystal_reporting,static/description/icon.png"
+            sequence="1"/>
+</odoo>
